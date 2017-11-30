@@ -1,0 +1,9 @@
+D:\SN2\SN2\obj\Debug\ResolveAssemblyReference.cache
+D:\SN2\SN2\obj\Debug\SN2.Form1.resources
+D:\SN2\SN2\obj\Debug\SN2.Properties.Resources.resources
+D:\SN2\SN2\obj\Debug\SN2.csproj.GenerateResource.Cache
+D:\SN2\SN2\bin\Debug\SN2.exe
+D:\SN2\SN2\bin\Debug\SN2.pdb
+D:\SN2\SN2\obj\Debug\SN2.exe
+D:\SN2\SN2\obj\Debug\SN2.pdb
+D:\SN2\SN2\bin\Debug\NPlot.dll
