@@ -64,6 +64,20 @@ namespace SN2
 
         public double[] ContFluxes { get { return this.cont; } }
 
+        public TempSpec RVShift(double rv)
+        {
+            TempSpec specRes = new TempSpec(this.lambs.Length);
+            double c = 300000;
+            for (int i = 0; i < specRes.Length; i++)
+            {
+                specRes.lambs[i] = this.lambs[i] + this.lambs[i] * rv / c;
+                specRes.norm_intes[i] = norm_intes[i];
+                specRes.cont[i] = cont[i];
+            }
+
+            return specRes;
+        }
+
         public static TempSpec Sum(TempSpec spec1, TempSpec spec2, double rv1, double rv2)
         {
             if (spec1.Length != spec2.Length) return null;

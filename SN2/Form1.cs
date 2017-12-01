@@ -17,14 +17,13 @@ namespace SN2
         string[] files;
         double[][] lambds;
         double[][] fluxes;
-        double[] lambds_temp;
-        double[] intens_temp;
         double[][] cont;
         int nn1, nn2;
         LinInterpolator li;
         Mask cutMask;
         Mask tellur;
 
+        TempSpec tspec = null;
         TempSpec tspec1 = null;
         TempSpec tspec2 = null;
 
@@ -168,43 +167,16 @@ namespace SN2
             return n;
         }
 
-        private void LoadTemplate()
-        {
-            this.lambds_temp = null;
-            this.intens_temp = null;
-
-            string path = txtTemplate1.Text;
-            StreamReader sr = new StreamReader(path);
-            string text = sr.ReadToEnd();
-            string[] lines = text.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-            string[] words;
-            this.lambds_temp = new double[lines.Length];
-            this.intens_temp = new double[lines.Length];
-            for (int i = 0; i < lines.Length; i++)
-            {
-                words = lines[i].Split(new string[] { " ", "\t" }, StringSplitOptions.RemoveEmptyEntries);
-                this.lambds_temp[i] = double.Parse(words[0].Replace(".", ","));
-                this.intens_temp[i] = double.Parse(words[1].Replace(".", ","));
-            }
-        }
-
-        private void RVShift(double rv)
-        {
-            for (int i = 0; i < lambds_temp.Length; i++)
-            {
-                lambds_temp[i] = lambds_temp[i] * (1.0 + rv / 300000);
-            }
-        }
-
         private void btnStart_Click(object sender, EventArgs e)
         {
             int oo, ox;
-            double rv;
+
             try
             {
-                oo = int.Parse(txtOrderO.Text.Replace(".", ","));
-                ox = int.Parse(txtOrderX.Text.Replace(".", ","));
-                rv = double.Parse(txtRV.Text.Replace(".", ","));
+                oo = int.Parse(txtOrderO.Text.Replace(",", "."), 
+                    System.Globalization.CultureInfo.InvariantCulture);
+                ox = int.Parse(txtOrderX.Text.Replace(",", "."), 
+                    System.Globalization.CultureInfo.InvariantCulture);
             }
             catch
             {
@@ -213,19 +185,32 @@ namespace SN2
             }
 
             this.lambds = null;
-            this.intens_temp = null;
-            this.lambds_temp = null;
             this.fluxes = null;
             this.cont = null;
             this.files = null;
 
-            tspec1 = new TempSpec(txtTemplate1.Text);
-            tspec2 = new TempSpec(txtTemplate2.Text);
-
             lbOrders.Items.Clear();
             LoadObsSpectra();
-            LoadTemplate();
-            RVShift(rv);
+
+            if (rbCompTwo.Checked)
+            {
+                double rv1, rv2;
+                rv1 = double.Parse(txtRV1.Text.Replace(",", "."), 
+                    System.Globalization.CultureInfo.InvariantCulture);
+                rv2 = double.Parse(txtRV2.Text.Replace(",", "."), 
+                    System.Globalization.CultureInfo.InvariantCulture);
+                tspec1 = new TempSpec(txtTemplate1.Text);
+                tspec2 = new TempSpec(txtTemplate2.Text);
+                tspec = TempSpec.Sum(tspec1, tspec2, rv1, rv2);
+            }
+            else
+            {
+                double rv;
+                rv = double.Parse(txtRV1.Text.Replace(",", "."),
+                    System.Globalization.CultureInfo.InvariantCulture);
+                tspec1 = new TempSpec(txtTemplate1.Text);
+                tspec = tspec1.RVShift(rv);
+            }
 
             tellur = new Mask(Application.StartupPath + "\\telluric.txt");
 
@@ -242,7 +227,7 @@ namespace SN2
                 mask[i + tellur.Size()][1] = cutMask.GetRightBound(i);
             }
 
-            Normator norm = new Normator(lambds, fluxes, lambds_temp, intens_temp, mask);
+            Normator norm = new Normator(lambds, fluxes, tspec.Lambdas, tspec.NormFluxes, mask);
             norm.Norm1(oo, ox, 10);
             cont = norm.Continum;
         }
@@ -299,7 +284,7 @@ namespace SN2
             if (this.cont != null)
             {
                 int nums = lambds[0].Length;
-                li = new LinInterpolator(lambds_temp, intens_temp);
+                li = new LinInterpolator(tspec.Lambdas, tspec.NormFluxes);
 
                 double[] ll = new double[nums];
                 double[] ff = new double[nums];
@@ -466,6 +451,18 @@ namespace SN2
                 }
                 sw.Close();
             }
+        }
+
+        private void rbCompOne_CheckedChanged(object sender, EventArgs e)
+        {
+            txtTemplate2.ReadOnly = true;
+            txtRV2.ReadOnly = true;
+        }
+
+        private void rbCompTwo_CheckedChanged(object sender, EventArgs e)
+        {
+            txtTemplate2.ReadOnly = false;
+            txtRV2.ReadOnly = false;
         }
     }
 }
