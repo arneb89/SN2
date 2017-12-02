@@ -67,7 +67,7 @@ namespace SN2
         public TempSpec RVShift(double rv)
         {
             TempSpec specRes = new TempSpec(this.lambs.Length);
-            double c = 300000;
+            double c = 299792458;
             for (int i = 0; i < specRes.Length; i++)
             {
                 specRes.lambs[i] = this.lambs[i] + this.lambs[i] * rv / c;
@@ -93,7 +93,7 @@ namespace SN2
             double lambda2 = spec1.Lambdas[spec1.Length];
             double dlambda = (lambda2 - lambda1) / spec1.Length;
 
-            double c = 300000;
+            double c = 299792458;
             double lambda, cont1, cont2;
 
             for (int i = 0; i < specSum.Length; i++)

@@ -59,17 +59,7 @@ namespace SN2
             files = Directory.GetFiles(dir, mask);
 
             int k = 0;
-            for (int i = 0; i < files.Length; i++)
-            {
-                if (!files[i].Contains(".norm."))
-                {
-                    files[k] = files[i];
-                    k++;
-                }
-            }
-            Array.Resize(ref files, k);
 
-            k = 0;
             for (int i = nn1; i <= nn2; i++)
             {
                 files[k] = files[i];
@@ -86,7 +76,7 @@ namespace SN2
             this.fluxes = new double[n_orders][];
 
             string[] delims = new string[] { " ", "\t", "\r", "\n", "\r\n" };
-            for (int i = nn1; i <=nn2; i++)
+            for (int i = 0; i < n_orders; i++)
             {
                 StreamReader sr = new StreamReader(files[i]);
                 string text = sr.ReadToEnd();
@@ -115,11 +105,8 @@ namespace SN2
 
         private void LoadObsSpectra2()
         {
-            System.Globalization.CultureInfo ci = new System.Globalization.CultureInfo("EN-US");
-            ci.NumberFormat.NumberDecimalSeparator = ".";
-
-            nn1 = int.Parse(txtNN1.Text.Replace(".", ","));
-            nn2 = int.Parse(txtNN2.Text.Replace(".", ","));
+            nn1 = int.Parse(txtNN1.Text);
+            nn2 = int.Parse(txtNN2.Text);
             int n_orders;
             n_orders = nn2 - nn1 + 1;
             string file = txtFileMask.Text;
@@ -146,8 +133,10 @@ namespace SN2
                 strMas = str.Split(delims, StringSplitOptions.RemoveEmptyEntries);
                 for (int j = 0; j < n_orders; j++)
                 {
-                    lambds[j][i] = double.Parse(strMas[nn1*2 + j * 2], ci);
-                    fluxes[j][i] = double.Parse(strMas[nn1*2 + j * 2 + 1], ci);
+                    lambds[j][i] = double.Parse(strMas[nn1 * 2 + j * 2], 
+                        System.Globalization.CultureInfo.InvariantCulture);
+                    fluxes[j][i] = double.Parse(strMas[nn1 * 2 + j * 2 + 1], 
+                        System.Globalization.CultureInfo.InvariantCulture);
                 }
             }
 
@@ -195,20 +184,61 @@ namespace SN2
             if (rbCompTwo.Checked)
             {
                 double rv1, rv2;
-                rv1 = double.Parse(txtRV1.Text.Replace(",", "."), 
-                    System.Globalization.CultureInfo.InvariantCulture);
-                rv2 = double.Parse(txtRV2.Text.Replace(",", "."), 
-                    System.Globalization.CultureInfo.InvariantCulture);
-                tspec1 = new TempSpec(txtTemplate1.Text);
-                tspec2 = new TempSpec(txtTemplate2.Text);
+                try
+                {
+                    rv1 = double.Parse(txtRV1.Text.Replace(",", "."),
+                        System.Globalization.CultureInfo.InvariantCulture);
+                    rv2 = double.Parse(txtRV2.Text.Replace(",", "."),
+                        System.Globalization.CultureInfo.InvariantCulture);
+                }
+                catch
+                {
+                    MessageBox.Show("Some error in RV1 or RV2 fields...", "Error...");
+                    return;
+                }
+                try
+                {
+                    tspec1 = new TempSpec(txtTemplate1.Text);
+                    tspec2 = new TempSpec(txtTemplate2.Text);
+                }
+                catch
+                {
+                    MessageBox.Show("Cannot load Template 1 file...", "Error...");
+                    return;
+                }
+                try
+                {
+                    tspec2 = new TempSpec(txtTemplate2.Text);
+                }
+                catch
+                {
+                    MessageBox.Show("Cannot load Template 2 file...", "Error...");
+                    return;
+                }
                 tspec = TempSpec.Sum(tspec1, tspec2, rv1, rv2);
             }
             else
             {
                 double rv;
-                rv = double.Parse(txtRV1.Text.Replace(",", "."),
-                    System.Globalization.CultureInfo.InvariantCulture);
-                tspec1 = new TempSpec(txtTemplate1.Text);
+                try
+                {
+                    rv = double.Parse(txtRV1.Text.Replace(",", "."),
+                        System.Globalization.CultureInfo.InvariantCulture);
+                }
+                catch
+                {
+                    MessageBox.Show("Some error in RV1 field...", "Error...");
+                    return;
+                }
+                try
+                {
+                    tspec1 = new TempSpec(txtTemplate1.Text);
+                }
+                catch
+                {
+                    MessageBox.Show("Cannot load Template 1 file...", "Error...");
+                    return;
+                }
                 tspec = tspec1.RVShift(rv);
             }
 
