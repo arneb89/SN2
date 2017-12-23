@@ -67,7 +67,7 @@ namespace SN2
         public TempSpec RVShift(double rv)
         {
             TempSpec specRes = new TempSpec(this.lambs.Length);
-            double c = 299792458;
+            double c = 299792.458;
             for (int i = 0; i < specRes.Length; i++)
             {
                 specRes.lambs[i] = this.lambs[i] + this.lambs[i] * rv / c;
@@ -90,10 +90,10 @@ namespace SN2
             LinInterpolator liCont2=new LinInterpolator(spec2.lambs, spec2.cont);
 
             double lambda1 = spec1.Lambdas[0];
-            double lambda2 = spec1.Lambdas[spec1.Length];
+            double lambda2 = spec1.Lambdas[spec1.Length-1];
             double dlambda = (lambda2 - lambda1) / spec1.Length;
 
-            double c = 299792458;
+            double c = 299792.458;
             double lambda, cont1, cont2;
 
             for (int i = 0; i < specSum.Length; i++)

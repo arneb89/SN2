@@ -84,23 +84,35 @@ namespace SN2
                 this.lambds[i] = new double[words.Length / 2];
                 this.fluxes[i] = new double[words.Length / 2];
 
-                if (i > 0)
-                {
-                    if (this.lambds[i].Length != this.lambds[i - 1].Length)
-                    {
-                        return;
-                    }
-                }
                 int n = 0;
+
                 for (int j = 0; j < words.Length / 2; j++)
                 {
                     this.lambds[i][j] = double.Parse(words[n].Replace(".", ","));
                     this.fluxes[i][j] = double.Parse(words[n + 1].Replace(".", ","));
                     n = n + 2;
+                    
                 }
             }
 
             InitOrderBox();
+        }
+
+        private void SpectraThinning(int step)
+        {
+
+            for (int i = 0; i < this.lambds.Length; i++)
+            {
+                int k = 0;
+                for (int j = 0; j < this.lambds[i].Length; j = j + step)
+                {
+                    this.lambds[i][k] = this.lambds[i][j];
+                    this.fluxes[i][k] = this.fluxes[i][j];
+                    k++;
+                }
+                Array.Resize(ref this.lambds[i], k);
+                Array.Resize(ref this.fluxes[i], k);
+            }
         }
 
         private void LoadObsSpectra2()
@@ -199,7 +211,6 @@ namespace SN2
                 try
                 {
                     tspec1 = new TempSpec(txtTemplate1.Text);
-                    tspec2 = new TempSpec(txtTemplate2.Text);
                 }
                 catch
                 {
@@ -256,6 +267,8 @@ namespace SN2
                 mask[i + tellur.Size()][0] = cutMask.GetLeftBound(i);
                 mask[i + tellur.Size()][1] = cutMask.GetRightBound(i);
             }
+
+            SpectraThinning(3);
 
             Normator norm = new Normator(lambds, fluxes, tspec.Lambdas, tspec.NormFluxes, mask);
             norm.Norm1(oo, ox, 10);

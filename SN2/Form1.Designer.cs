@@ -201,7 +201,7 @@
             this.txtTemplate1.Name = "txtTemplate1";
             this.txtTemplate1.Size = new System.Drawing.Size(267, 20);
             this.txtTemplate1.TabIndex = 14;
-            this.txtTemplate1.Text = "D:\\TYC3847\\lp0000_05900_0450_0020_on_150.rgs";
+            this.txtTemplate1.Text = "D:\\ERVul\\lm0002_05700_0410_0020_on_ER_1.rgs";
             // 
             // label6
             // 
@@ -397,7 +397,7 @@
             this.txtTemplate2.ReadOnly = true;
             this.txtTemplate2.Size = new System.Drawing.Size(267, 20);
             this.txtTemplate2.TabIndex = 26;
-            this.txtTemplate2.Text = "D:\\TYC3847\\lp0000_05900_0450_0020_on_150.rgs";
+            this.txtTemplate2.Text = "D:\\ERVul\\lm0002_05700_0410_0020_on_ER_2.rgs";
             // 
             // tabControl2
             // 
