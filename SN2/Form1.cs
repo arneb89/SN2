@@ -50,33 +50,57 @@ namespace SN2
                 LoadObsSpectra2();
                 return;
             }
-            nn1 = int.Parse(txtNN1.Text.Replace(".", ","));
-            nn2 = int.Parse(txtNN2.Text.Replace(".", ","));
+            
+            try // нужно поставить завершение во вызывающей функции
+            {
+                nn1 = int.Parse(txtNN1.Text.Replace(".", ","));
+                nn2 = int.Parse(txtNN2.Text.Replace(".", ","));
+            }
+            catch
+            {
+                MessageBox.Show("Check orders numbers...", "Error...");
+                return;
+            }
+            
             int n_orders;
             n_orders = nn2 - nn1 + 1;
+            
             string mask = @txtFileMask.Text;
             dir = @txtDir.Text;
-            files = Directory.GetFiles(dir, mask);
+            try
+            {
+                files = Directory.GetFiles(dir, mask);
+            }
+            catch
+            {
+                MessageBox.Show("Check the path to the spectra...", "Error...");
+                return;
+            }
+            if (files.Length == 0)
+            {
+                MessageBox.Show("No spectra files were found...", "Error...");
+                return;
+            }
 
             int k = 0;
-
             for (int i = nn1; i <= nn2; i++)
             {
+                if (i >= files.Length) break;
                 files[k] = files[i];
                 k++;
             }
-            Array.Resize(ref files, n_orders);
+            Array.Resize(ref files, k);
             
 
             this.lambds = null;
             this.fluxes = null;
             lbOrders.Items.Clear();
 
-            this.lambds = new double[n_orders][];
-            this.fluxes = new double[n_orders][];
+            this.lambds = new double[files.Length][];
+            this.fluxes = new double[files.Length][];
 
             string[] delims = new string[] { " ", "\t", "\r", "\n", "\r\n" };
-            for (int i = 0; i < n_orders; i++)
+            for (int i = 0; i < files.Length; i++)
             {
                 StreamReader sr = new StreamReader(files[i]);
                 string text = sr.ReadToEnd();
@@ -91,7 +115,6 @@ namespace SN2
                     this.lambds[i][j] = double.Parse(words[n].Replace(".", ","));
                     this.fluxes[i][j] = double.Parse(words[n + 1].Replace(".", ","));
                     n = n + 2;
-                    
                 }
             }
 
@@ -284,6 +307,8 @@ namespace SN2
         {
             int n = lbOrders.SelectedIndex;
 
+            if (n == -1) return;
+
             double lam_min = lambds[n].First();
             double lam_max = lambds[n].Last();
             if (lam_min > lam_max)
@@ -468,13 +493,24 @@ namespace SN2
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            if (this.cont == null) return;
+            if (this.cont == null)
+            {
+                MessageBox.Show("The spectra were not normalized...", "Error...");
+                return;
+            }
 
             string file_path;
             StreamWriter sw;
+
+            int slash_pos = files[0].LastIndexOf("\\");
+            string dir0 = files[0].Substring(0, slash_pos + 1);
+            string dir1 = dir0 + "norm\\";
+            Directory.CreateDirectory(dir1);
+
             for (int i = 0; i < lambds.Length; i++)
             {
-                file_path = files[i].Replace(".dat", "") + ".norm.dat";
+                
+                file_path = dir1+ files[i].Remove(0, slash_pos+1).Replace(".dat", "") + ".norm.dat";
                 sw = new StreamWriter(file_path);
                 if (lambds[i][0] < lambds[i][1])
                 {
