@@ -37,8 +37,8 @@ namespace SN2
             {
                 str = sr.ReadLine();
                 strMas = str.Split(new string[] { " ", "\t" }, StringSplitOptions.RemoveEmptyEntries);
-                this.ranges[0][i] = double.Parse(strMas[0]);
-                this.ranges[1][i] = double.Parse(strMas[1]);
+                this.ranges[0][i] = double.Parse(strMas[0], System.Globalization.CultureInfo.InvariantCulture);
+                this.ranges[1][i] = double.Parse(strMas[1], System.Globalization.CultureInfo.InvariantCulture);
             }
 
             sr.Close();
@@ -193,7 +193,9 @@ namespace SN2
             sw.WriteLine(this.size.ToString());
             for (int i = 0; i < this.size; i++)
             {
-                sw.WriteLine("{0:0000.00000}\t{1:0000.00000}", this.ranges[0][i], this.ranges[1][i]);
+                sw.WriteLine(
+                    string.Format("{0:0000.00000}\t{1:0000.00000}", 
+                    this.ranges[0][i], this.ranges[1][i]).Replace(",", "."));
             }
             sw.Close();
         }

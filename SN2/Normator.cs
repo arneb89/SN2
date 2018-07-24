@@ -9,12 +9,14 @@ namespace SN2
     {
         double[][] lambds;
         double[][] fluxes;
-        double[] lambds_temp;
-        double[] intes_temp;
+        double[] lambds_temp = null;
+        double[] intes_temp = null;
         double[] intes_interp;
+        double[] coeff = null;
         double[][] cont;
         int ord_o, ord_x;
-        LinInterpolator li;
+        double max_flux;
+        LinInterpolator li = null;
         int n_orders;
         int n_pixels;
         double[][] mask;
@@ -28,6 +30,13 @@ namespace SN2
             this.mask = mask;
         }
 
+        public Normator(double[][] lambs, double[][] flxs, double[][] mask)
+        {
+            this.lambds = lambs;
+            this.fluxes = flxs;
+            this.mask = mask;
+        }
+
         public void Norm1(int oo, int ox, int iterMax)
         {
             ord_x = ox;
@@ -35,7 +44,9 @@ namespace SN2
 
             n_orders = this.lambds.Length;
             n_pixels = this.lambds[0].Length;
-            li = new LinInterpolator(lambds_temp, intes_temp);
+
+            if (this.lambds_temp != null)
+                li = new LinInterpolator(lambds_temp, intes_temp);
 
             double[] fluxes_norm = new double[n_orders * n_pixels];
             double[] sigmas = new double[n_orders * n_pixels];
@@ -43,11 +54,12 @@ namespace SN2
             double[][] xx = new double[n_orders * n_pixels][];
             for (int i = 0; i < xx.Length; i++) xx[i] = new double[2];
 
-            double max_flux = this.fluxes[0][0];
+            max_flux = this.fluxes[0][0];
             for (int i = 0; i < n_orders; i++)
                 for (int j = 0; j < n_pixels; j++)
                     if (max_flux < fluxes[i][j]) max_flux = fluxes[i][j];
 
+            // Removing regions in observed spectra according the mask;
             int k = 0;
             for (int n = 0; n < n_orders; n++)
             {
@@ -73,11 +85,11 @@ namespace SN2
             Array.Resize(ref xx, k);
             Array.Resize(ref fluxes_norm, k);
 
+            // Fitting the model spectra to observed spectra;
             FitSVD.fit_finctions_md func = new FitSVD.fit_finctions_md(Pars);
 
             FitSVD fitter = new FitSVD(xx, fluxes_norm, sigmas, func, 1e-20);
 
-            double[] coeff = null;
             double stderror;
             int rejected_poins_number = 0;
             for (int i = 0; i < 1; i++)
@@ -113,14 +125,13 @@ namespace SN2
             cont = new double[n_orders][];
             for (int i = 0; i < cont.Length; i++) cont[i] = new double[n_pixels];
 
-            k = 0;
+
             for (int i = 0; i < n_orders; i++)
             {
                 for (int j = 0; j < n_pixels; j++)
                 {
                     cont[i][j] = Surface(coeff, (double)i / n_orders, 
                         (double)j / n_pixels, oo, ox) * max_flux;
-                    k++;
                 }
             }
         }
@@ -128,8 +139,12 @@ namespace SN2
         private double[] Pars(double[] xy)
         {
             double[] pars = new double[(ord_o + 1) * (ord_x + 1)];
-            double r = li.InterpUni(
-                lambds[(int)Math.Round(xy[0] * n_orders, 0)][(int)Math.Round(xy[1] * n_pixels, 0)]);
+            double r = 1;
+            if (this.li != null)
+            {
+                r = li.InterpUni(
+                    lambds[(int)Math.Round(xy[0] * n_orders, 0)][(int)Math.Round(xy[1] * n_pixels, 0)]);
+            }
             int k = 0;
             for (int i = 0; i <= ord_o; i++)
             {
@@ -157,7 +172,7 @@ namespace SN2
             return sum;
         }
 
-        public double[][] Continum
+        public double[][] GetContinum
         {
             get { return this.cont; }
         }

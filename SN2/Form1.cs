@@ -37,29 +37,26 @@ namespace SN2
 
         private void InitOrderBox()
         {
+            lbOrders.Items.Clear();
             for (int i = 0; i < lambds.Length; i++)
             {
                 lbOrders.Items.Add(string.Format("ORDER {0}", i));
             }
         }
 
-        private void LoadObsSpectra()
+        private bool LoadObsSpectra1()
         {
-            if (rbOneFile.Checked)
+            try
             {
-                LoadObsSpectra2();
-                return;
-            }
-            
-            try // нужно поставить завершение во вызывающей функции
-            {
-                nn1 = int.Parse(txtNN1.Text.Replace(".", ","));
-                nn2 = int.Parse(txtNN2.Text.Replace(".", ","));
+                nn1 = int.Parse(txtNN1.Text, 
+                    System.Globalization.CultureInfo.InvariantCulture);
+                nn2 = int.Parse(txtNN2.Text, 
+                    System.Globalization.CultureInfo.InvariantCulture);
             }
             catch
             {
                 MessageBox.Show("Check orders numbers...", "Error...");
-                return;
+                return false;
             }
             
             int n_orders;
@@ -74,12 +71,12 @@ namespace SN2
             catch
             {
                 MessageBox.Show("Check the path to the spectra...", "Error...");
-                return;
+                return false;
             }
             if (files.Length == 0)
             {
                 MessageBox.Show("No spectra files were found...", "Error...");
-                return;
+                return false;
             }
 
             int k = 0;
@@ -91,10 +88,8 @@ namespace SN2
             }
             Array.Resize(ref files, k);
             
-
             this.lambds = null;
             this.fluxes = null;
-            lbOrders.Items.Clear();
 
             this.lambds = new double[files.Length][];
             this.fluxes = new double[files.Length][];
@@ -112,49 +107,55 @@ namespace SN2
 
                 for (int j = 0; j < words.Length / 2; j++)
                 {
-                    this.lambds[i][j] = double.Parse(words[n].Replace(".", ","));
-                    this.fluxes[i][j] = double.Parse(words[n + 1].Replace(".", ","));
+                    this.lambds[i][j] = double.Parse(words[n], 
+                        System.Globalization.CultureInfo.InvariantCulture);
+                    this.fluxes[i][j] = double.Parse(words[n + 1], 
+                        System.Globalization.CultureInfo.InvariantCulture);
                     n = n + 2;
                 }
             }
 
-            InitOrderBox();
+            return true;
         }
 
-        private void SpectraThinning(int step)
+        private bool LoadObsSpectra2()
         {
-
-            for (int i = 0; i < this.lambds.Length; i++)
+            try
             {
-                int k = 0;
-                for (int j = 0; j < this.lambds[i].Length; j = j + step)
+                nn1 = int.Parse(txtNN1.Text);
+                nn2 = int.Parse(txtNN2.Text);
+                if (nn2 < nn1)
                 {
-                    this.lambds[i][k] = this.lambds[i][j];
-                    this.fluxes[i][k] = this.fluxes[i][j];
-                    k++;
+                    MessageBox.Show("Number of the last order must be greater than the first one...", "Error...");
+                    return false;
                 }
-                Array.Resize(ref this.lambds[i], k);
-                Array.Resize(ref this.fluxes[i], k);
             }
-        }
+            catch
+            {
+                MessageBox.Show("Check orders numbers...", "Error...");
+                return false;
+            }
 
-        private void LoadObsSpectra2()
-        {
-            nn1 = int.Parse(txtNN1.Text);
-            nn2 = int.Parse(txtNN2.Text);
             int n_orders;
             n_orders = nn2 - nn1 + 1;
             string file = txtFileMask.Text;
             dir = @txtDir.Text;
+            if (!dir.EndsWith("\\")) dir += "\\";
 
             string str;
             string[] strMas;
             string[] delims = new string[] { " ", "\t" };
 
-            StreamReader sr = new StreamReader(dir + file);
+            StreamReader sr = null;
+            string path = dir + file;
+            try { sr = new StreamReader(path); }
+            catch 
+            { 
+                MessageBox.Show(string.Format("The file {0} is not found...", path), "Error...");
+                return false;
+            }
 
-
-            int n_lines = NLines(dir + file);
+            int n_lines = NLines(path);
             this.lambds = new double[n_orders][];
             this.fluxes = new double[n_orders][];
             for (int i = 0; i < lambds.Length; i++)
@@ -168,14 +169,52 @@ namespace SN2
                 strMas = str.Split(delims, StringSplitOptions.RemoveEmptyEntries);
                 for (int j = 0; j < n_orders; j++)
                 {
-                    lambds[j][i] = double.Parse(strMas[nn1 * 2 + j * 2], 
+                    lambds[j][i] = double.Parse(strMas[nn1 * 2 + j * 2],
                         System.Globalization.CultureInfo.InvariantCulture);
-                    fluxes[j][i] = double.Parse(strMas[nn1 * 2 + j * 2 + 1], 
+                    fluxes[j][i] = double.Parse(strMas[nn1 * 2 + j * 2 + 1],
                         System.Globalization.CultureInfo.InvariantCulture);
                 }
             }
 
-            InitOrderBox();
+            return true;
+        }
+
+        private void btnLoadObsSpectra_Click(object sender, EventArgs e)
+        {
+            this.cont = null;
+            if (rbManyFiles.Checked)
+                if (!LoadObsSpectra1()) return;
+                else InitOrderBox();
+            if (rbOneFile.Checked)
+                if (!LoadObsSpectra2()) return;
+                else InitOrderBox();
+        }
+
+        private double[][][] SpectraGrading(int step)
+        {
+            double[][] lambds1 = new double[this.lambds.Length][];
+            for (int i = 0; i < lambds1.Length; i++) 
+                lambds1[i] = new double[this.lambds[i].Length];
+            double[][] fluxes1 = new double[this.fluxes.Length][];
+            for (int i = 0; i < fluxes1.Length; i++)
+                fluxes1[i] = new double[this.fluxes[i].Length];
+
+            for (int i = 0; i < lambds1.Length; i++)
+            {
+                int k = 0;
+                for (int j = 0; j < lambds1[i].Length; j = j + step)
+                {
+                    lambds1[i][k] = this.lambds[i][j];
+                    fluxes1[i][k] = this.fluxes[i][j];
+                    k++;
+                }
+                Array.Resize(ref lambds1[i], k);
+                Array.Resize(ref fluxes1[i], k);
+            }
+            double[][][] res = new double[2][][];
+            res[0] = lambds1;
+            res[1] = fluxes1;
+            return res;
         }
 
         private int NLines(string path)
@@ -193,13 +232,15 @@ namespace SN2
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            int oo, ox;
+            int oo, ox, grading_step;
 
             try
             {
-                oo = int.Parse(txtOrderO.Text.Replace(",", "."), 
+                oo = int.Parse(txtOrderO.Text, 
                     System.Globalization.CultureInfo.InvariantCulture);
-                ox = int.Parse(txtOrderX.Text.Replace(",", "."), 
+                ox = int.Parse(txtOrderX.Text, 
+                    System.Globalization.CultureInfo.InvariantCulture);
+                grading_step = int.Parse(txtGradingStep.Text,
                     System.Globalization.CultureInfo.InvariantCulture);
             }
             catch
@@ -208,72 +249,76 @@ namespace SN2
                 return;
             }
 
-            this.lambds = null;
-            this.fluxes = null;
+            if (this.lambds == null)
+            {
+                MessageBox.Show("Load observed spectra...", "Error...");
+                return;
+            }
+
             this.cont = null;
             this.files = null;
 
-            lbOrders.Items.Clear();
-            LoadObsSpectra();
-
-            if (rbCompTwo.Checked)
+            if (rbTemplate.Checked)
             {
-                double rv1, rv2;
-                try
+                if (rbCompTwo.Checked)
                 {
-                    rv1 = double.Parse(txtRV1.Text.Replace(",", "."),
-                        System.Globalization.CultureInfo.InvariantCulture);
-                    rv2 = double.Parse(txtRV2.Text.Replace(",", "."),
-                        System.Globalization.CultureInfo.InvariantCulture);
+                    double rv1, rv2;
+                    try
+                    {
+                        rv1 = double.Parse(txtRV1.Text.Replace(",", "."),
+                            System.Globalization.CultureInfo.InvariantCulture);
+                        rv2 = double.Parse(txtRV2.Text.Replace(",", "."),
+                            System.Globalization.CultureInfo.InvariantCulture);
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Some error in RV1 or RV2 fields...", "Error...");
+                        return;
+                    }
+                    try
+                    {
+                        tspec1 = new TempSpec(txtTemplate1.Text);
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Cannot load Template 1 file...", "Error...");
+                        return;
+                    }
+                    try
+                    {
+                        tspec2 = new TempSpec(txtTemplate2.Text);
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Cannot load Template 2 file...", "Error...");
+                        return;
+                    }
+                    tspec = TempSpec.Sum(tspec1, tspec2, rv1, rv2);
                 }
-                catch
+                else
                 {
-                    MessageBox.Show("Some error in RV1 or RV2 fields...", "Error...");
-                    return;
+                    double rv;
+                    try
+                    {
+                        rv = double.Parse(txtRV1.Text.Replace(",", "."),
+                            System.Globalization.CultureInfo.InvariantCulture);
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Some error in RV1 field...", "Error...");
+                        return;
+                    }
+                    try
+                    {
+                        tspec1 = new TempSpec(txtTemplate1.Text);
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Cannot load Template 1 file...", "Error...");
+                        return;
+                    }
+                    tspec = tspec1.RVShift(rv);
                 }
-                try
-                {
-                    tspec1 = new TempSpec(txtTemplate1.Text);
-                }
-                catch
-                {
-                    MessageBox.Show("Cannot load Template 1 file...", "Error...");
-                    return;
-                }
-                try
-                {
-                    tspec2 = new TempSpec(txtTemplate2.Text);
-                }
-                catch
-                {
-                    MessageBox.Show("Cannot load Template 2 file...", "Error...");
-                    return;
-                }
-                tspec = TempSpec.Sum(tspec1, tspec2, rv1, rv2);
-            }
-            else
-            {
-                double rv;
-                try
-                {
-                    rv = double.Parse(txtRV1.Text.Replace(",", "."),
-                        System.Globalization.CultureInfo.InvariantCulture);
-                }
-                catch
-                {
-                    MessageBox.Show("Some error in RV1 field...", "Error...");
-                    return;
-                }
-                try
-                {
-                    tspec1 = new TempSpec(txtTemplate1.Text);
-                }
-                catch
-                {
-                    MessageBox.Show("Cannot load Template 1 file...", "Error...");
-                    return;
-                }
-                tspec = tspec1.RVShift(rv);
             }
 
             tellur = new Mask(Application.StartupPath + "\\telluric.txt");
@@ -291,11 +336,34 @@ namespace SN2
                 mask[i + tellur.Size()][1] = cutMask.GetRightBound(i);
             }
 
-            SpectraThinning(3);
+            double[][] lambds1, fluxes1;
+            double[][][] outmas = null;
+            if (grading_step > 1) outmas = SpectraGrading(grading_step);
+            lambds1 = outmas[0];
+            fluxes1 = outmas[1];
 
-            Normator norm = new Normator(lambds, fluxes, tspec.Lambdas, tspec.NormFluxes, mask);
+            Normator norm=null;
+            if (rbTemplate.Checked)
+                norm = new Normator(lambds1, fluxes1, tspec.Lambdas, tspec.NormFluxes, mask);
+            else
+                norm = new Normator(lambds1, fluxes1, mask);
             norm.Norm1(oo, ox, 10);
-            cont = norm.Continum;
+
+            this.cont = new double[this.lambds.Length][];
+            for (int i = 0; i < this.cont.Length; i++) 
+                this.cont[i] = new double[this.lambds[i].Length];
+
+            for (int i = 0; i < this.cont.Length; i++)
+            {
+                Array.Reverse(lambds1[i]);
+                Array.Reverse(norm.GetContinum[i]);
+                LinInterpolator li = new LinInterpolator(lambds1[i], norm.GetContinum[i]);
+                
+                for (int j = 0; j < this.cont[i].Length; j++)
+                {
+                    this.cont[i][j] = li.Interp(this.lambds[i][j]);
+                }
+            }
         }
 
         private void DrawObsSpecGraphHandler(object sender, EventArgs e)
@@ -319,15 +387,18 @@ namespace SN2
                 lam_min = buff;
             }
             plot.Clear();
-            for (int i = 0; i < tellur.Size(); i++)
+            if (tellur != null)
             {
-                if (tellur.GetLeftBound(i) > lam_min && tellur.GetRightBound(i) < lam_max)
+                for (int i = 0; i < tellur.Size(); i++)
                 {
-                    VerticalLine vl1 = new VerticalLine(tellur.GetLeftBound(i));
-                    VerticalLine vl2 = new VerticalLine(tellur.GetRightBound(i));
-                    FilledRegion fr = new FilledRegion(vl1, vl2);
-                    fr.Brush = Brushes.LightBlue;
-                    plot.Add(fr);
+                    if (tellur.GetLeftBound(i) > lam_min && tellur.GetRightBound(i) < lam_max)
+                    {
+                        VerticalLine vl1 = new VerticalLine(tellur.GetLeftBound(i));
+                        VerticalLine vl2 = new VerticalLine(tellur.GetRightBound(i));
+                        FilledRegion fr = new FilledRegion(vl1, vl2);
+                        fr.Brush = Brushes.LightBlue;
+                        plot.Add(fr);
+                    }
                 }
             }
             for (int i = 0; i < cutMask.Size(); i++)
@@ -352,28 +423,30 @@ namespace SN2
             if (this.cont != null)
             {
                 int nums = lambds[0].Length;
-                li = new LinInterpolator(tspec.Lambdas, tspec.NormFluxes);
-
-                double[] ll = new double[nums];
-                double[] ff = new double[nums];
-                for (int i = 0; i < nums; i++)
-                {
-                    ll[i] = lambds[n][i];
-                    ff[i] = li.InterpUni(ll[i]) * cont[n][i];
-                }
-
+                
                 LinePlot lp0 = new LinePlot();
                 lp0.AbscissaData = this.lambds[n];
                 lp0.OrdinateData = this.cont[n];
                 lp0.Color = Color.Green;
-
-                LinePlot lp1 = new LinePlot();
-                lp1.AbscissaData = ll;
-                lp1.OrdinateData = ff;
-                lp1.Color = Color.Red;
-
                 plot.Add(lp0);
-                plot.Add(lp1);
+
+                if (this.tspec != null)
+                {
+                    li = new LinInterpolator(tspec.Lambdas, tspec.NormFluxes);
+
+                    double[] ll = new double[nums];
+                    double[] ff = new double[nums];
+                    for (int i = 0; i < nums; i++)
+                    {
+                        ll[i] = lambds[n][i];
+                        ff[i] = li.InterpUni(ll[i]) * cont[n][i];
+                    }
+                    LinePlot lp1 = new LinePlot();
+                    lp1.AbscissaData = ll;
+                    lp1.OrdinateData = ff;
+                    lp1.Color = Color.Red;
+                    plot.Add(lp1);
+                }
             }
 
             plot.AddInteraction(new NPlot.Windows.PlotSurface2D.Interactions.HorizontalDrag());
@@ -502,15 +575,15 @@ namespace SN2
             string file_path;
             StreamWriter sw;
 
-            int slash_pos = files[0].LastIndexOf("\\");
-            string dir0 = files[0].Substring(0, slash_pos + 1);
-            string dir1 = dir0 + "norm\\";
+            string dir1="";
+            if (this.dir.EndsWith("\\")) dir1 = dir + "norm\\";
+            else dir1 = dir + "\\norm\\";
+
             Directory.CreateDirectory(dir1);
 
             for (int i = 0; i < lambds.Length; i++)
             {
-                
-                file_path = dir1+ files[i].Remove(0, slash_pos+1).Replace(".dat", "") + ".norm.dat";
+                file_path = dir1 + "ORD" + string.Format("{0:00}", i) + ".norm.dat";
                 sw = new StreamWriter(file_path);
                 if (lambds[i][0] < lambds[i][1])
                 {
@@ -522,7 +595,7 @@ namespace SN2
                 }
                 else
                 {
-                    for (int n = lambds[i].Length-1; n >= 0; n--)
+                    for (int n = lambds[i].Length - 1; n >= 0; n--)
                     {
                         sw.WriteLine(string.Format("{0:0000.0000}\t{1:0.000000}\t{2:0.000000}",
                             lambds[i][n], fluxes[i][n] / cont[i][n], cont[i][n]).Replace(",", "."));
@@ -542,6 +615,20 @@ namespace SN2
         {
             txtTemplate2.ReadOnly = false;
             txtRV2.ReadOnly = false;
+        }
+
+        private void btnDir_Click(object sender, EventArgs e)
+        {
+            string dir_name;
+            folderBrowserDialog1.ShowDialog();
+            dir_name = folderBrowserDialog1.SelectedPath;
+            txtDir.Text = dir_name;
+        }
+
+        private void rbTemplate_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rbTemplate.Checked) groupBox6.Enabled = true;
+            else groupBox6.Enabled = false;
         }
     }
 }

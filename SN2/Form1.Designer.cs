@@ -36,13 +36,14 @@
             this.txtOrderX = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
             this.txtDir = new System.Windows.Forms.TextBox();
             this.lbOrders = new System.Windows.Forms.ListBox();
             this.txtTemplate1 = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.label4 = new System.Windows.Forms.Label();
+            this.txtGradingStep = new System.Windows.Forms.TextBox();
             this.btnSave = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.btnCCMask = new System.Windows.Forms.Button();
@@ -63,15 +64,23 @@
             this.txtTemplate2 = new System.Windows.Forms.TextBox();
             this.tabControl2 = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.btnDir = new System.Windows.Forms.Button();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.btnLoadObsSpectra = new System.Windows.Forms.Button();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.rbCompTwo = new System.Windows.Forms.RadioButton();
             this.rbCompOne = new System.Windows.Forms.RadioButton();
-            this.label11 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.txtRV2 = new System.Windows.Forms.TextBox();
             this.txtRV1 = new System.Windows.Forms.TextBox();
-            this.label9 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.txtRV2 = new System.Windows.Forms.TextBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.rbTemplate = new System.Windows.Forms.RadioButton();
+            this.rbSimpleModel = new System.Windows.Forms.RadioButton();
+            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -79,26 +88,29 @@
             this.groupBox2.SuspendLayout();
             this.tabControl2.SuspendLayout();
             this.tabPage3.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             this.tabPage4.SuspendLayout();
+            this.groupBox6.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.groupBox5.SuspendLayout();
             this.SuspendLayout();
             // 
             // txtFileMask
             // 
-            this.txtFileMask.Location = new System.Drawing.Point(6, 108);
+            this.txtFileMask.Location = new System.Drawing.Point(95, 95);
             this.txtFileMask.Name = "txtFileMask";
-            this.txtFileMask.Size = new System.Drawing.Size(267, 20);
+            this.txtFileMask.Size = new System.Drawing.Size(178, 20);
             this.txtFileMask.TabIndex = 0;
             this.txtFileMask.Text = "ERVul*.dat";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 92);
+            this.label1.Location = new System.Drawing.Point(92, 79);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(57, 13);
+            this.label1.Size = new System.Drawing.Size(84, 13);
             this.label1.TabIndex = 1;
-            this.label1.Text = "Files Mask";
+            this.label1.Text = "File / Files Mask";
             // 
             // btnStart
             // 
@@ -138,24 +150,24 @@
             // 
             // txtOrderO
             // 
-            this.txtOrderO.Location = new System.Drawing.Point(183, 6);
+            this.txtOrderO.Location = new System.Drawing.Point(220, 32);
             this.txtOrderO.Name = "txtOrderO";
-            this.txtOrderO.Size = new System.Drawing.Size(90, 20);
+            this.txtOrderO.Size = new System.Drawing.Size(53, 20);
             this.txtOrderO.TabIndex = 4;
             this.txtOrderO.Text = "5";
             // 
             // txtOrderX
             // 
-            this.txtOrderX.Location = new System.Drawing.Point(183, 33);
+            this.txtOrderX.Location = new System.Drawing.Point(220, 58);
             this.txtOrderX.Name = "txtOrderX";
-            this.txtOrderX.Size = new System.Drawing.Size(90, 20);
+            this.txtOrderX.Size = new System.Drawing.Size(53, 20);
             this.txtOrderX.TabIndex = 5;
             this.txtOrderX.Text = "5";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(155, 9);
+            this.label2.Location = new System.Drawing.Point(191, 35);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(23, 13);
             this.label2.TabIndex = 6;
@@ -164,26 +176,18 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(155, 36);
+            this.label3.Location = new System.Drawing.Point(192, 61);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(22, 13);
             this.label3.TabIndex = 7;
             this.label3.Text = "OX";
             // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(3, 53);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(49, 13);
-            this.label5.TabIndex = 11;
-            this.label5.Text = "Directory";
-            // 
             // txtDir
             // 
-            this.txtDir.Location = new System.Drawing.Point(6, 69);
+            this.txtDir.Location = new System.Drawing.Point(95, 33);
+            this.txtDir.Multiline = true;
             this.txtDir.Name = "txtDir";
-            this.txtDir.Size = new System.Drawing.Size(267, 20);
+            this.txtDir.Size = new System.Drawing.Size(178, 43);
             this.txtDir.TabIndex = 10;
             this.txtDir.Text = "D:\\ERVul\\C20170911\\CoudeSh\\ERVul\\ERVul_0001\\";
             // 
@@ -192,25 +196,25 @@
             this.lbOrders.FormattingEnabled = true;
             this.lbOrders.Location = new System.Drawing.Point(6, 19);
             this.lbOrders.Name = "lbOrders";
-            this.lbOrders.Size = new System.Drawing.Size(275, 121);
+            this.lbOrders.Size = new System.Drawing.Size(275, 108);
             this.lbOrders.TabIndex = 12;
             // 
             // txtTemplate1
             // 
-            this.txtTemplate1.Location = new System.Drawing.Point(6, 72);
+            this.txtTemplate1.Location = new System.Drawing.Point(29, 68);
             this.txtTemplate1.Name = "txtTemplate1";
-            this.txtTemplate1.Size = new System.Drawing.Size(267, 20);
+            this.txtTemplate1.Size = new System.Drawing.Size(235, 20);
             this.txtTemplate1.TabIndex = 14;
             this.txtTemplate1.Text = "D:\\ERVul\\lm0002_05700_0410_0020_on_ER_1.rgs";
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(6, 56);
+            this.label6.Location = new System.Drawing.Point(3, 71);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(60, 13);
+            this.label6.Size = new System.Drawing.Size(20, 13);
             this.label6.TabIndex = 15;
-            this.label6.Text = "Template 1";
+            this.label6.Text = "#1";
             // 
             // tabControl1
             // 
@@ -224,6 +228,8 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.label4);
+            this.tabPage1.Controls.Add(this.txtGradingStep);
             this.tabPage1.Controls.Add(this.btnSave);
             this.tabPage1.Controls.Add(this.txtOrderO);
             this.tabPage1.Controls.Add(this.btnStart);
@@ -237,6 +243,23 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "APPROX";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(145, 9);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(69, 13);
+            this.label4.TabIndex = 12;
+            this.label4.Text = "Grading Step";
+            // 
+            // txtGradingStep
+            // 
+            this.txtGradingStep.Location = new System.Drawing.Point(220, 6);
+            this.txtGradingStep.Name = "txtGradingStep";
+            this.txtGradingStep.Size = new System.Drawing.Size(53, 20);
+            this.txtGradingStep.TabIndex = 11;
+            this.txtGradingStep.Text = "3";
             // 
             // btnSave
             // 
@@ -314,9 +337,9 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.lbOrders);
-            this.groupBox1.Location = new System.Drawing.Point(12, 198);
+            this.groupBox1.Location = new System.Drawing.Point(12, 216);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(287, 145);
+            this.groupBox1.Size = new System.Drawing.Size(287, 127);
             this.groupBox1.TabIndex = 18;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "ORDERS";
@@ -327,31 +350,31 @@
             // 
             // txtNN1
             // 
-            this.txtNN1.Location = new System.Drawing.Point(145, 134);
+            this.txtNN1.Location = new System.Drawing.Point(40, 19);
             this.txtNN1.Name = "txtNN1";
-            this.txtNN1.Size = new System.Drawing.Size(48, 20);
+            this.txtNN1.Size = new System.Drawing.Size(34, 20);
             this.txtNN1.TabIndex = 19;
             // 
             // txtNN2
             // 
-            this.txtNN2.Location = new System.Drawing.Point(225, 134);
+            this.txtNN2.Location = new System.Drawing.Point(40, 45);
             this.txtNN2.Name = "txtNN2";
-            this.txtNN2.Size = new System.Drawing.Size(48, 20);
+            this.txtNN2.Size = new System.Drawing.Size(34, 20);
             this.txtNN2.TabIndex = 20;
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(72, 137);
+            this.label7.Location = new System.Drawing.Point(4, 22);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(67, 13);
+            this.label7.Size = new System.Drawing.Size(30, 13);
             this.label7.TabIndex = 21;
-            this.label7.Text = "Orders: From";
+            this.label7.Text = "From";
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(199, 137);
+            this.label8.Location = new System.Drawing.Point(14, 48);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(20, 13);
             this.label8.TabIndex = 22;
@@ -372,7 +395,7 @@
             // rbManyFiles
             // 
             this.rbManyFiles.AutoSize = true;
-            this.rbManyFiles.Location = new System.Drawing.Point(73, 19);
+            this.rbManyFiles.Location = new System.Drawing.Point(6, 42);
             this.rbManyFiles.Name = "rbManyFiles";
             this.rbManyFiles.Size = new System.Drawing.Size(72, 17);
             this.rbManyFiles.TabIndex = 24;
@@ -385,17 +408,17 @@
             this.groupBox2.Controls.Add(this.rbManyFiles);
             this.groupBox2.Location = new System.Drawing.Point(6, 6);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(151, 44);
+            this.groupBox2.Size = new System.Drawing.Size(80, 71);
             this.groupBox2.TabIndex = 25;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Format";
             // 
             // txtTemplate2
             // 
-            this.txtTemplate2.Location = new System.Drawing.Point(6, 113);
+            this.txtTemplate2.Location = new System.Drawing.Point(29, 94);
             this.txtTemplate2.Name = "txtTemplate2";
             this.txtTemplate2.ReadOnly = true;
-            this.txtTemplate2.Size = new System.Drawing.Size(267, 20);
+            this.txtTemplate2.Size = new System.Drawing.Size(235, 20);
             this.txtTemplate2.TabIndex = 26;
             this.txtTemplate2.Text = "D:\\ERVul\\lm0002_05700_0410_0020_on_ER_2.rgs";
             // 
@@ -406,54 +429,106 @@
             this.tabControl2.Location = new System.Drawing.Point(12, 6);
             this.tabControl2.Name = "tabControl2";
             this.tabControl2.SelectedIndex = 0;
-            this.tabControl2.Size = new System.Drawing.Size(287, 190);
+            this.tabControl2.Size = new System.Drawing.Size(287, 204);
             this.tabControl2.TabIndex = 27;
             // 
             // tabPage3
             // 
-            this.tabPage3.Controls.Add(this.groupBox2);
+            this.tabPage3.Controls.Add(this.btnDir);
+            this.tabPage3.Controls.Add(this.groupBox4);
             this.tabPage3.Controls.Add(this.txtDir);
-            this.tabPage3.Controls.Add(this.label8);
-            this.tabPage3.Controls.Add(this.label5);
-            this.tabPage3.Controls.Add(this.label7);
-            this.tabPage3.Controls.Add(this.txtNN2);
-            this.tabPage3.Controls.Add(this.txtNN1);
+            this.tabPage3.Controls.Add(this.btnLoadObsSpectra);
+            this.tabPage3.Controls.Add(this.groupBox2);
             this.tabPage3.Controls.Add(this.label1);
             this.tabPage3.Controls.Add(this.txtFileMask);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(279, 164);
+            this.tabPage3.Size = new System.Drawing.Size(279, 178);
             this.tabPage3.TabIndex = 0;
             this.tabPage3.Text = "Observed";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
+            // btnDir
+            // 
+            this.btnDir.Location = new System.Drawing.Point(95, 6);
+            this.btnDir.Name = "btnDir";
+            this.btnDir.Size = new System.Drawing.Size(178, 23);
+            this.btnDir.TabIndex = 28;
+            this.btnDir.Text = "Directory";
+            this.btnDir.UseVisualStyleBackColor = true;
+            this.btnDir.Click += new System.EventHandler(this.btnDir_Click);
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.txtNN1);
+            this.groupBox4.Controls.Add(this.label7);
+            this.groupBox4.Controls.Add(this.txtNN2);
+            this.groupBox4.Controls.Add(this.label8);
+            this.groupBox4.Location = new System.Drawing.Point(6, 81);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(81, 76);
+            this.groupBox4.TabIndex = 26;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Orders";
+            // 
+            // btnLoadObsSpectra
+            // 
+            this.btnLoadObsSpectra.Location = new System.Drawing.Point(95, 129);
+            this.btnLoadObsSpectra.Name = "btnLoadObsSpectra";
+            this.btnLoadObsSpectra.Size = new System.Drawing.Size(178, 28);
+            this.btnLoadObsSpectra.TabIndex = 26;
+            this.btnLoadObsSpectra.Text = "Load";
+            this.btnLoadObsSpectra.UseVisualStyleBackColor = true;
+            this.btnLoadObsSpectra.Click += new System.EventHandler(this.btnLoadObsSpectra_Click);
+            // 
             // tabPage4
             // 
-            this.tabPage4.Controls.Add(this.groupBox3);
-            this.tabPage4.Controls.Add(this.label11);
-            this.tabPage4.Controls.Add(this.label10);
-            this.tabPage4.Controls.Add(this.txtRV2);
-            this.tabPage4.Controls.Add(this.txtRV1);
-            this.tabPage4.Controls.Add(this.label9);
-            this.tabPage4.Controls.Add(this.txtTemplate1);
-            this.tabPage4.Controls.Add(this.txtTemplate2);
-            this.tabPage4.Controls.Add(this.label6);
+            this.tabPage4.Controls.Add(this.groupBox6);
+            this.tabPage4.Controls.Add(this.groupBox5);
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(279, 164);
+            this.tabPage4.Size = new System.Drawing.Size(279, 178);
             this.tabPage4.TabIndex = 1;
             this.tabPage4.Text = "Model";
             this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.label5);
+            this.groupBox6.Controls.Add(this.groupBox3);
+            this.groupBox6.Controls.Add(this.txtRV1);
+            this.groupBox6.Controls.Add(this.txtTemplate2);
+            this.groupBox6.Controls.Add(this.txtTemplate1);
+            this.groupBox6.Controls.Add(this.label11);
+            this.groupBox6.Controls.Add(this.txtRV2);
+            this.groupBox6.Controls.Add(this.label6);
+            this.groupBox6.Controls.Add(this.label10);
+            this.groupBox6.Enabled = false;
+            this.groupBox6.Location = new System.Drawing.Point(3, 56);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(270, 119);
+            this.groupBox6.TabIndex = 34;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Template Spectra";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(3, 97);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(20, 13);
+            this.label5.TabIndex = 33;
+            this.label5.Text = "#2";
             // 
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.rbCompTwo);
             this.groupBox3.Controls.Add(this.rbCompOne);
-            this.groupBox3.Location = new System.Drawing.Point(6, 6);
+            this.groupBox3.Location = new System.Drawing.Point(6, 16);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(136, 47);
+            this.groupBox3.Size = new System.Drawing.Size(135, 47);
             this.groupBox3.TabIndex = 32;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Number Of Components";
@@ -461,7 +536,7 @@
             // rbCompTwo
             // 
             this.rbCompTwo.AutoSize = true;
-            this.rbCompTwo.Location = new System.Drawing.Point(70, 19);
+            this.rbCompTwo.Location = new System.Drawing.Point(71, 19);
             this.rbCompTwo.Name = "rbCompTwo";
             this.rbCompTwo.Size = new System.Drawing.Size(46, 17);
             this.rbCompTwo.TabIndex = 1;
@@ -482,47 +557,72 @@
             this.rbCompOne.UseVisualStyleBackColor = true;
             this.rbCompOne.CheckedChanged += new System.EventHandler(this.rbCompOne_CheckedChanged);
             // 
+            // txtRV1
+            // 
+            this.txtRV1.Location = new System.Drawing.Point(217, 16);
+            this.txtRV1.Name = "txtRV1";
+            this.txtRV1.Size = new System.Drawing.Size(47, 20);
+            this.txtRV1.TabIndex = 28;
+            // 
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(147, 38);
+            this.label11.Location = new System.Drawing.Point(150, 45);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(61, 13);
             this.label11.TabIndex = 31;
             this.label11.Text = "RV2 [km/s]";
             // 
+            // txtRV2
+            // 
+            this.txtRV2.Location = new System.Drawing.Point(217, 42);
+            this.txtRV2.Name = "txtRV2";
+            this.txtRV2.ReadOnly = true;
+            this.txtRV2.Size = new System.Drawing.Size(47, 20);
+            this.txtRV2.TabIndex = 29;
+            // 
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(147, 12);
+            this.label10.Location = new System.Drawing.Point(150, 19);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(61, 13);
             this.label10.TabIndex = 30;
             this.label10.Text = "RV1 [km/s]";
             // 
-            // txtRV2
+            // groupBox5
             // 
-            this.txtRV2.Location = new System.Drawing.Point(209, 35);
-            this.txtRV2.Name = "txtRV2";
-            this.txtRV2.ReadOnly = true;
-            this.txtRV2.Size = new System.Drawing.Size(64, 20);
-            this.txtRV2.TabIndex = 29;
+            this.groupBox5.Controls.Add(this.rbTemplate);
+            this.groupBox5.Controls.Add(this.rbSimpleModel);
+            this.groupBox5.Location = new System.Drawing.Point(6, 6);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(267, 44);
+            this.groupBox5.TabIndex = 33;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Mode";
             // 
-            // txtRV1
+            // rbTemplate
             // 
-            this.txtRV1.Location = new System.Drawing.Point(209, 9);
-            this.txtRV1.Name = "txtRV1";
-            this.txtRV1.Size = new System.Drawing.Size(64, 20);
-            this.txtRV1.TabIndex = 28;
+            this.rbTemplate.AutoSize = true;
+            this.rbTemplate.Location = new System.Drawing.Point(74, 19);
+            this.rbTemplate.Name = "rbTemplate";
+            this.rbTemplate.Size = new System.Drawing.Size(99, 17);
+            this.rbTemplate.TabIndex = 1;
+            this.rbTemplate.Text = "Fit To Template";
+            this.rbTemplate.UseVisualStyleBackColor = true;
+            this.rbTemplate.CheckedChanged += new System.EventHandler(this.rbTemplate_CheckedChanged);
             // 
-            // label9
+            // rbSimpleModel
             // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(3, 97);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(60, 13);
-            this.label9.TabIndex = 27;
-            this.label9.Text = "Template 2";
+            this.rbSimpleModel.AutoSize = true;
+            this.rbSimpleModel.Checked = true;
+            this.rbSimpleModel.Location = new System.Drawing.Point(15, 19);
+            this.rbSimpleModel.Name = "rbSimpleModel";
+            this.rbSimpleModel.Size = new System.Drawing.Size(56, 17);
+            this.rbSimpleModel.TabIndex = 0;
+            this.rbSimpleModel.TabStop = true;
+            this.rbSimpleModel.Text = "Simple";
+            this.rbSimpleModel.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -535,6 +635,7 @@
             this.Controls.Add(this.plot);
             this.Name = "Form1";
             this.Text = "SN2";
+            this.TopMost = true;
             this.Load += new System.EventHandler(this.Form1_Load);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
@@ -546,10 +647,15 @@
             this.tabControl2.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
             this.tabPage4.ResumeLayout(false);
-            this.tabPage4.PerformLayout();
+            this.groupBox6.ResumeLayout(false);
+            this.groupBox6.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -564,7 +670,6 @@
         private System.Windows.Forms.TextBox txtOrderX;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox txtDir;
         private System.Windows.Forms.ListBox lbOrders;
         private System.Windows.Forms.TextBox txtTemplate1;
@@ -598,8 +703,18 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TextBox txtRV2;
         private System.Windows.Forms.TextBox txtRV1;
-        private System.Windows.Forms.Label label9;
         private System.Windows.Forms.RadioButton rbCompTwo;
+        private System.Windows.Forms.Button btnLoadObsSpectra;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.Button btnDir;
+        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox txtGradingStep;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.RadioButton rbSimpleModel;
+        private System.Windows.Forms.RadioButton rbTemplate;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.Label label5;
     }
 }
 
